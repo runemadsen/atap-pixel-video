@@ -14,3 +14,11 @@ canvas {
   display: block;
   margin-bottom: 10px;
 }
+
+#ledScreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: calc(100vh * 160 / 31);
+  height: 100vh;
+}

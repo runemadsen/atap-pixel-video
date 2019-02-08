@@ -11,8 +11,9 @@ let led, ledCtx;
 const init = () => {
   // Create video
   vid = document.createElement("video");
-  vid.src = "art.mp4";
+  vid.src = "BrainWave.mp4";
   vid.loop = true;
+  vid.muted = true;
   document.body.appendChild(vid);
 
   // Create canvas
@@ -24,6 +25,7 @@ const init = () => {
 
   // Create led output
   led = document.createElement("canvas");
+  led.id = "ledScreen";
   led.width = ledWidth * (2 * circleRadius) + (ledWidth + 1) * circleSpacing;
   led.height = ledHeight * (2 * circleRadius) + (ledHeight + 1) * circleSpacing;
   document.body.appendChild(led);
@@ -32,8 +34,7 @@ const init = () => {
   // Listeners
   vid.addEventListener("play", draw);
 
-  const toggle = document.getElementById("toggle");
-  toggle.addEventListener("click", () => {
+  led.addEventListener("click", () => {
     if (vid.paused) {
       toggle.innerHTML = "Pause Video";
       vid.play();
@@ -46,7 +47,15 @@ const init = () => {
 
 const draw = () => {
   // Draw video into canvas and dither
-  canvasCtx.drawImage(vid, 0, -70);
+  const vratio = vid.videoHeight / vid.videoWidth;
+
+  canvasCtx.drawImage(
+    vid,
+    0,
+    (ledHeight - ledWidth * vratio) / 2,
+    ledWidth,
+    ledWidth * vratio
+  );
   const frame = canvasCtx.getImageData(0, 0, canvas.width, canvas.height);
   const newFrame = ditherAtkinson(greyscaleLuminance(frame));
   canvasCtx.putImageData(newFrame, 0, 0);
