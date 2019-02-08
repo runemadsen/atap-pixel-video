@@ -3,15 +3,17 @@ const ledHeight = 80;
 const circleColor = "#f9e14a";
 const circleRadius = 5;
 const circleSpacing = 20 - circleRadius;
-
+const real = true;
 let vid;
 let canvas, canvasCtx;
 let led, ledCtx;
 
 const init = () => {
+  const video = document.location.search.split("=")[1];
+
   // Create video
   vid = document.createElement("video");
-  vid.src = "BrainWave.mp4";
+  vid.src = video || "art.mp4";
   vid.loop = true;
   vid.muted = true;
   document.body.appendChild(vid);
@@ -26,6 +28,7 @@ const init = () => {
   // Create led output
   led = document.createElement("canvas");
   led.id = "ledScreen";
+  led.className = real ? "real" : "";
   led.width = ledWidth * (2 * circleRadius) + (ledWidth + 1) * circleSpacing;
   led.height = ledHeight * (2 * circleRadius) + (ledHeight + 1) * circleSpacing;
   document.body.appendChild(led);

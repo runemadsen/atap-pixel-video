@@ -19,6 +19,8 @@ canvas {
   position: absolute;
   top: 0;
   left: 0;
-  height: calc(100vh * 160 / 31);
   height: 100vh;
+}
+.real {
+  height: calc(100vh * 160 / 31);
 }
