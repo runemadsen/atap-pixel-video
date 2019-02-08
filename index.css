@@ -1,0 +1,16 @@
+button {
+  padding: 10px 20px;
+  background-color: #272626;
+  color: white;
+  font-family: Helvetica;
+  font-size: 15px;
+  border: none;
+  display: block;
+  margin-bottom: 10px;
+}
+
+video,
+canvas {
+  display: block;
+  margin-bottom: 10px;
+}
