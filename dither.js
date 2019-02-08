@@ -1,8 +1,8 @@
 const ledWidth = 240;
 const ledHeight = 80;
 const circleColor = "#f9e14a";
-const circleRadius = 2;
-const circleSpacing = 1;
+const circleRadius = 5;
+const circleSpacing = 20 - circleRadius;
 
 let vid;
 let canvas, canvasCtx;
@@ -46,7 +46,7 @@ const init = () => {
 
 const draw = () => {
   // Draw video into canvas and dither
-  canvasCtx.drawImage(vid, 0, 0);
+  canvasCtx.drawImage(vid, 0, -70);
   const frame = canvasCtx.getImageData(0, 0, canvas.width, canvas.height);
   const newFrame = ditherAtkinson(greyscaleLuminance(frame));
   canvasCtx.putImageData(newFrame, 0, 0);
@@ -59,20 +59,29 @@ const draw = () => {
   ledCtx.fillRect(0, 0, led.width, led.height);
   ledCtx.translate(margin, margin);
   ledCtx.fillStyle = circleColor;
+  ledCtx.strokeStyle = circleColor;
+  ledCtx.lineWidth = circleRadius;
   for (let i = 0; i < ledWidth; i++) {
     for (let j = 0; j < ledHeight; j++) {
       const redIndex = i + j * newFrame.width;
       if (newFrame.data[redIndex * 4] === 255) {
         ledCtx.beginPath();
-        ledCtx.arc(
-          i * moveAmount,
-          j * moveAmount,
-          circleRadius,
-          0,
-          2 * Math.PI,
-          false
-        );
-        ledCtx.fill();
+        ledCtx.moveTo(i * moveAmount - circleRadius, j * moveAmount);
+        ledCtx.lineTo(i * moveAmount + circleRadius, j * moveAmount);
+        ledCtx.stroke();
+        ledCtx.beginPath();
+        ledCtx.moveTo(i * moveAmount, j * moveAmount - circleRadius);
+        ledCtx.lineTo(i * moveAmount, j * moveAmount + circleRadius);
+        ledCtx.stroke();
+        // ledCtx.arc(
+        //   i * moveAmount,
+        //   j * moveAmount,
+        //   circleRadius,
+        //   0,
+        //   2 * Math.PI,
+        //   false
+        // );
+        // ledCtx.fill();
       }
     }
   }
