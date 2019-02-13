@@ -1,0 +1,15 @@
+{
+  presets: [
+    [
+      "env",
+      {
+        targets: {
+          browsers: ["last 2 versions", "ie >= 11"]
+        },
+        modules: false
+      }
+    ],
+    "stage-3"
+  ],
+  plugins: ["transform-runtime", "import-glob"]
+}
