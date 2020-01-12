@@ -15,12 +15,10 @@ canvas {
   margin-bottom: 10px;
 }
 
-#ledScreen {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100vh;
-}
-.real {
-  height: calc(100vh * 160 / 31);
+.grid {
+  padding: 10px;
+  position: top left;
+  background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAIElEQVQoU2NkIAIcuPnrPyMR6hhGFeINJXDwgAhiwhIAnJ0jvy51U54AAAAASUVORK5CYII=")
+    repeat;
+  min-height: 100vh;
 }

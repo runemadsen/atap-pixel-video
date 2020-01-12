@@ -1,17 +1,18 @@
-// import CCapture from "ccapture.js";
 import css from "./index.css";
-import vid1 from "./videos/moon.mp4";
+import vid1 from "./videos/sinkingsmall.mp4";
 
-const ledWidth = 240;
-const ledHeight = 80;
-const circleColor = "#f9e14a";
-const circleRadius = 5;
-const circleSpacing = 20 - circleRadius;
-const real = true;
-let vid;
-let canvas, canvasCtx;
-let led, ledCtx;
-let capturer;
+const googleBlue = "#4285F4";
+const googleRed = "#DB4437";
+const googleGreen = "#0F9D58";
+const googleYellow = "#F4B400";
+
+const ledWidth = 640;
+const ledHeight = 268;
+
+const outScale = 2;
+const skip = 5;
+
+let vid, canvas, canvasCtx, grid, out, outCtx;
 
 const init = () => {
   const video = document.location.search.split("=")[1];
@@ -28,21 +29,24 @@ const init = () => {
   canvas.width = ledWidth;
   canvas.height = ledHeight;
   canvasCtx = canvas.getContext("2d");
-  document.body.appendChild(canvas);
+  // document.body.appendChild(canvas);
 
-  // Create led output
-  led = document.createElement("canvas");
-  led.id = css.ledScreen;
-  led.className = real ? css.real : "";
-  led.width = ledWidth * (2 * circleRadius) + (ledWidth + 1) * circleSpacing;
-  led.height = ledHeight * (2 * circleRadius) + (ledHeight + 1) * circleSpacing;
-  document.body.appendChild(led);
-  ledCtx = led.getContext("2d");
+  // Create grid output
+  grid = document.createElement("div");
+  grid.className = css.grid;
+  document.body.appendChild(grid);
+
+  out = document.createElement("canvas");
+  out.width = canvas.width * outScale;
+  out.height = canvas.height * outScale;
+  outCtx = out.getContext("2d");
+  outCtx.strokeStyle = googleBlue;
+  grid.appendChild(out);
 
   // Listeners
   vid.addEventListener("play", draw);
 
-  led.addEventListener("click", () => {
+  toggle.addEventListener("click", () => {
     if (vid.paused) {
       toggle.innerHTML = "Pause Video";
       vid.play();
@@ -51,14 +55,10 @@ const init = () => {
       vid.pause();
     }
   });
-
-  // var capturer = new CCapture({ format: "webm" });
 };
 
 const draw = () => {
-  // Draw video into canvas and dither
   const vratio = vid.videoHeight / vid.videoWidth;
-
   canvasCtx.drawImage(
     vid,
     0,
@@ -67,46 +67,38 @@ const draw = () => {
     ledWidth * vratio
   );
   const frame = canvasCtx.getImageData(0, 0, canvas.width, canvas.height);
-  const newFrame = ditherAtkinson(greyscaleLuminance(frame));
-  canvasCtx.putImageData(newFrame, 0, 0);
+  const newFrame = greyscaleLuminance(frame);
+  drawLines(newFrame);
 
-  // Draw larger led simulation
-  const margin = circleSpacing + circleRadius;
-  const moveAmount = 2 * circleRadius + circleSpacing;
+  window.requestAnimationFrame(draw);
+};
 
-  ledCtx.fillStyle = "black";
-  ledCtx.fillRect(0, 0, led.width, led.height);
-  ledCtx.translate(margin, margin);
-  ledCtx.fillStyle = circleColor;
-  ledCtx.strokeStyle = circleColor;
-  ledCtx.lineWidth = circleRadius;
-  for (let i = 0; i < ledWidth; i++) {
-    for (let j = 0; j < ledHeight; j++) {
-      const redIndex = i + j * newFrame.width;
-      if (newFrame.data[redIndex * 4] === 255) {
-        ledCtx.beginPath();
-        ledCtx.moveTo(i * moveAmount - circleRadius, j * moveAmount);
-        ledCtx.lineTo(i * moveAmount + circleRadius, j * moveAmount);
-        ledCtx.stroke();
-        ledCtx.beginPath();
-        ledCtx.moveTo(i * moveAmount, j * moveAmount - circleRadius);
-        ledCtx.lineTo(i * moveAmount, j * moveAmount + circleRadius);
-        ledCtx.stroke();
-        // ledCtx.arc(
-        //   i * moveAmount,
-        //   j * moveAmount,
-        //   circleRadius,
-        //   0,
-        //   2 * Math.PI,
-        //   false
-        // );
-        // ledCtx.fill();
+function drawLines(frame) {
+  outCtx.clearRect(0, 0, out.width, out.height);
+  outCtx.lineWidth = 1;
+  outCtx.beginPath();
+  for (let x = -Math.round(out.height / 10) * 10; x < out.width; x += 10) {
+    outCtx.moveTo(x, 0);
+    outCtx.lineTo(x + out.height, out.height);
+  }
+  outCtx.stroke();
+
+  outCtx.lineWidth = 3;
+  outCtx.beginPath();
+  for (let x = 0; x < canvas.width; x += skip) {
+    for (let y = 0; y < canvas.height; y += skip) {
+      const idx = (x + y * canvas.width) * 4;
+      if (frame.data[idx] < 75) {
+        outCtx.moveTo(x * outScale, y * outScale);
+        outCtx.lineTo(
+          x * outScale + outScale * skip,
+          y * outScale + outScale * skip
+        );
       }
     }
   }
-  ledCtx.translate(-margin, -margin);
-  window.requestAnimationFrame(draw);
-};
+  outCtx.stroke();
+}
 
 document.addEventListener("DOMContentLoaded", init);
 

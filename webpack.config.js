@@ -37,15 +37,6 @@ module.exports = (env, argv) => {
     ])
   };
 
-  const svg = {
-    test: /\.(svg)$/,
-    use: [
-      {
-        loader: "svg-react-loader"
-      }
-    ]
-  };
-
   const images = {
     test: /\.(png|jp(e)?g)$/,
     use: [
@@ -125,7 +116,7 @@ module.exports = (env, argv) => {
       alias: {}
     },
     module: {
-      rules: [js, css, svg, images, files, html]
+      rules: [js, css, images, files, html]
     },
     optimization,
     plugins,
