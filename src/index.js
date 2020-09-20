@@ -1,13 +1,13 @@
 import css from "./index.css";
-import vid1 from "./videos/sinkingsmall.mp4";
+import vid1 from "./videos/giphy.mp4";
 
 const googleBlue = "#4285F4";
 const googleRed = "#DB4437";
 const googleGreen = "#0F9D58";
 const googleYellow = "#F4B400";
 
-const ledWidth = 640;
-const ledHeight = 268;
+const ledWidth = 442;
+const ledHeight = 250;
 
 const outScale = 2;
 const skip = 5;
@@ -75,13 +75,6 @@ const draw = () => {
 
 function drawLines(frame) {
   outCtx.clearRect(0, 0, out.width, out.height);
-  outCtx.lineWidth = 1;
-  outCtx.beginPath();
-  for (let x = -Math.round(out.height / 10) * 10; x < out.width; x += 10) {
-    outCtx.moveTo(x, 0);
-    outCtx.lineTo(x + out.height, out.height);
-  }
-  outCtx.stroke();
 
   outCtx.lineWidth = 3;
   outCtx.beginPath();
@@ -114,23 +107,6 @@ const greyscaleLuminance = frame => {
         frame.data[i + 2] * 0.07,
       10
     );
-  }
-  return frame;
-};
-
-// Apply Atkinson Dither to Image Data
-const ditherAtkinson = frame => {
-  for (let curpx = 0; curpx <= frame.data.length; curpx += 4) {
-    const newCol = frame.data[curpx] <= 128 ? 0 : 255;
-    const err = parseInt((frame.data[curpx] - newCol) / 8, 10);
-    frame.data[curpx] = newCol;
-    frame.data[curpx + 4] += err;
-    frame.data[curpx + 8] += err;
-    frame.data[curpx + 4 * frame.width - 4] += err;
-    frame.data[curpx + 4 * frame.width] += err;
-    frame.data[curpx + 4 * frame.width + 4] += err;
-    frame.data[curpx + 8 * frame.width] += err;
-    frame.data[curpx + 1] = frame.data[curpx + 2] = frame.data[curpx];
   }
   return frame;
 };

@@ -98,7 +98,8 @@ module.exports = (env, argv) => {
     new HtmlWebPackPlugin({
       template: "./src/index.html",
       filename: "./index.html"
-    })
+    }),
+    new webpack.HotModuleReplacementPlugin()
   ];
 
   return {
@@ -108,8 +109,8 @@ module.exports = (env, argv) => {
       path: path.join(__dirname, "dist"),
       libraryTarget: "umd",
       publicPath: "/",
-      filename: "assets/[contenthash]-[name].js",
-      chunkFilename: "assets/[contenthash]-[name].[id].chunk.js"
+      filename: "assets/[hash]-[name].js",
+      chunkFilename: "assets/[hash]-[name].[id].chunk.js"
     },
     resolve: {
       extensions: [".js", ".jsx", ".json"],
@@ -127,7 +128,8 @@ module.exports = (env, argv) => {
     },
     devServer: {
       port: 8070,
-      historyApiFallback: true
+      historyApiFallback: true,
+      hot: true
     }
   };
 };
